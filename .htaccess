@@ -1,0 +1,68 @@
+# Запрещаем прямой доступ к служебным PHP-скриптам (миграции, сиды, тесты, конфиги)
+<FilesMatch "^(migrate_schema|schema_dump|config\.local|config\.local\.example|seed_store_reviews|seed_store_reviews_extra|seed_delivery_zones|seed_pricing_rules|seed_flower_meanings|cleanup_demo_store_reviews|webhook_setup|import_flowers|import_new_batch|import_products)\.php$">
+    Require all denied
+</FilesMatch>
+
+# Запрещаем доступ к подключаемым библиотекам / bootstrap / конфигам
+<FilesMatch "^(bootstrap|config|db|helpers|mailer|audit_log_lib|category_lib|courier_location_lib|delivery_lib|extra_services_lib|favorites_lib|order_presenter|pricing_lib|product_admin_lib|product_ai_tagging_lib|promo_lib|review_lib|store_review_lib|telegram_config|telegram_notify|vk_config|vk_notify|ai_advisor_lib|ai_config|cart_store|map_config|checkout_services|address_book_lib|legal_versions|webapp_courier_lib)\.php$">
+    Require all denied
+</FilesMatch>
+
+# Запрещаем доступ к файлам с расширениями, которым нечего делать в вебе
+<FilesMatch "\.(log|sql|dbml|env|py|docx|pptx|xlsx|bat|md|ini|yml|yaml|lock)$">
+    Require all denied
+</FilesMatch>
+
+# .txt запрещаем, кроме robots.txt
+<FilesMatch "\.txt$">
+    Require all denied
+</FilesMatch>
+<Files "robots.txt">
+    Require all granted
+</Files>
+
+# config.local.php — на всякий случай (даже если PHP его выполнит, запрещаем)
+<Files "config.local.php">
+    Require all denied
+</Files>
+
+# Закрываем dotfiles (.htaccess, .git, .env и т.п.)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Закрываем служебные директории репозитория
+RedirectMatch 403 ^/(data|database|docs)/.*$
+
+# Стандартные правила безопасности
+Options -Indexes
+ServerSignature Off
+
+# Никогда не показывать PHP-ошибки пользователям (страховка на случай, если APP_DEBUG=true).
+# Ошибки пишутся в лог-файл, заданный php_value error_log.
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_flag display_startup_errors Off
+    php_flag log_errors On
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag display_errors Off
+    php_flag display_startup_errors Off
+    php_flag log_errors On
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag display_errors Off
+    php_flag display_startup_errors Off
+    php_flag log_errors On
+</IfModule>
+
+# Кэширование статики (опционально)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/svg+xml "access plus 7 days"
+    ExpiresByType image/png "access plus 7 days"
+    ExpiresByType image/jpeg "access plus 7 days"
+    ExpiresByType image/webp "access plus 7 days"
+    ExpiresByType text/css "access plus 1 day"
+    ExpiresByType application/javascript "access plus 1 day"
+</IfModule>

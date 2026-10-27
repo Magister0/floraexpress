@@ -1,0 +1,367 @@
+// FloraExpress — схема базы данных. Вставьте в dbdiagram.io
+
+Table ai_chats {
+  id bigint [pk]
+  user_id bigint
+  session_token text
+  title text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ai_messages {
+  id bigint [pk]
+  chat_id bigint
+  role text
+  content text
+  recommended_product_ids text
+  tokens_used int
+  model_used text
+  fallback bool
+  created_at timestamp
+}
+
+Table audit_log {
+  id bigint [pk]
+  user_id bigint
+  role text
+  action text
+  entity text
+  entity_id bigint
+  ip text
+  user_agent text
+  meta_json jsonb
+  created_at timestamp
+}
+
+Table categories {
+  id bigint [pk]
+  slug text
+  name text
+  sort_order int
+  is_active bool
+  created_at timestamp
+}
+
+Table contact_messages {
+  id bigint [pk]
+  name text
+  phone text
+  email text
+  message text
+  created_at timestamp
+}
+
+Table courier_location_track {
+  id bigint [pk]
+  courier_id bigint
+  delivery_id bigint
+  lat numeric
+  lon numeric
+  received_at timestamp
+}
+
+Table courier_locations_current {
+  courier_id bigint [pk]
+  lat numeric
+  lon numeric
+  accuracy_m numeric
+  heading numeric
+  speed_kmh numeric
+  source text
+  live_period_sec int
+  delivery_id bigint
+  received_at timestamp
+  expires_at timestamp
+}
+
+Table deliveries {
+  id bigint [pk]
+  order_id bigint
+  courier_id bigint
+  status text
+  eta text
+  assigned_at timestamp
+  delivered_at timestamp
+  courier_fee numeric
+  distance_km_est numeric
+}
+
+Table delivery_events {
+  id bigint [pk]
+  delivery_id bigint
+  event text
+  meta_json text
+  created_at timestamp
+}
+
+Table delivery_tariff_modifiers {
+  id bigint [pk]
+  name text
+  kind text
+  multiplier numeric
+  surcharge_fixed numeric
+  time_from time
+  time_to time
+  weekdays jsonb
+  date_from date
+  date_to date
+  priority int
+  active bool
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table delivery_zones {
+  id bigint [pk]
+  name text
+  description text
+  center_lat numeric
+  center_lon numeric
+  radius_km numeric
+  base_fee numeric
+  free_distance_km numeric
+  per_km_fee numeric
+  min_fee numeric
+  free_from numeric
+  eta_speed_kmh numeric
+  eta_prep_min int
+  priority int
+  active bool
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table extra_service_ai_metadata {
+  service_id bigint [pk]
+  occasions text
+  avoid_occasions text
+  recipients text
+  moods text
+  keywords text
+  analysis text
+  confidence numeric
+  model_used text
+  analyzed_at timestamp
+  manually_edited bool
+}
+
+Table extra_services {
+  id int [pk]
+  name varchar
+  price numeric
+  description text
+  image text
+  allow_message bool
+  sort_order int
+  is_active bool
+  created_at timestamp
+}
+
+Table flower_meanings {
+  id bigint [pk]
+  flower_key text
+  flower_name_ru text
+  color text
+  meaning text
+  mood text
+  occasions text
+  avoid_for text
+  source text
+  created_at timestamp
+}
+
+Table order_extra_services {
+  id int [pk]
+  order_id int
+  service_id int
+  name_snapshot varchar
+  qty int
+  price numeric
+  message_text text
+  created_at timestamp
+}
+
+Table order_items {
+  id bigint [pk]
+  order_id bigint
+  product_id bigint
+  qty int
+  price numeric
+}
+
+Table orders {
+  id bigint [pk]
+  user_id bigint
+  status text
+  address text
+  phone text
+  comment text
+  total numeric
+  created_at timestamp
+  recipient_name text
+  delivery_slot text
+  address_lat float
+  address_lon float
+  promo_code text
+  discount_amount numeric
+  subtotal_amount numeric
+  admin_seen_at timestamp
+  photo_report text
+  photo_report_at timestamp
+  photo_report_by bigint
+  photo_report_requested bool
+  tracking_token varchar
+  delivery_fee numeric
+  delivery_calc_meta text
+}
+
+Table pricing_rules {
+  id bigint [pk]
+  name text
+  description text
+  starts_at timestamp
+  ends_at timestamp
+  multiplier numeric
+  surcharge_fixed numeric
+  applies_to text
+  target_categories jsonb
+  target_product_ids jsonb
+  priority int
+  active bool
+  badge_label text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table product_ai_metadata {
+  product_id bigint [pk]
+  occasions text
+  avoid_occasions text
+  recipients text
+  moods text
+  style text
+  season text
+  age_group text
+  price_tier text
+  keywords text
+  analysis text
+  confidence numeric
+  model_used text
+  analyzed_at timestamp
+  manually_edited bool
+}
+
+Table product_reviews {
+  id bigint [pk]
+  product_id bigint
+  user_id bigint
+  rating smallint
+  body text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table products {
+  id bigint [pk]
+  name text
+  price numeric
+  image text
+  description text
+  category text
+  is_active int
+  created_at timestamp
+  old_price numeric
+  stock int
+  stem_product bool
+}
+
+Table promocode_user_usages {
+  id bigint [pk]
+  promo_id bigint
+  user_id int
+  order_id int
+  created_at timestamp
+}
+
+Table promocodes {
+  id bigint [pk]
+  code text
+  title text
+  discount_type text
+  discount_value numeric
+  min_order_sum numeric
+  max_discount numeric
+  delivery_method text
+  active bool
+  usage_limit int
+  used_count int
+  starts_at timestamp
+  ends_at timestamp
+  created_at timestamp
+  single_use_per_user bool
+}
+
+Table store_reviews {
+  id bigint [pk]
+  user_id bigint
+  rating smallint
+  review_text text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_addresses {
+  id bigint [pk]
+  user_id bigint
+  label text
+  address text
+  lat float
+  lon float
+  is_default bool
+  created_at timestamp
+}
+
+Table user_favorites {
+  id bigint [pk]
+  user_id bigint
+  product_id bigint
+  created_at timestamp
+}
+
+Table users {
+  id bigint [pk]
+  email text
+  name text
+  pass_hash text
+  role text
+  created_at timestamp
+  phone text
+  telegram_chat_id bigint
+  on_shift bool
+  shift_started_at timestamp
+  reset_token varchar
+  reset_token_expires timestamp
+  privacy_consent_at timestamp
+  privacy_consent_version varchar
+  privacy_consent_ip varchar
+}
+
+// Связи
+Ref: deliveries.order_id > orders.id
+Ref: deliveries.courier_id > users.id
+Ref: orders.user_id > users.id
+Ref: order_items.order_id > orders.id
+Ref: order_items.product_id > products.id
+Ref: delivery_events.delivery_id > deliveries.id
+Ref: user_addresses.user_id > users.id
+Ref: user_favorites.user_id > users.id
+Ref: user_favorites.product_id > products.id
+Ref: order_extra_services.order_id > orders.id
+Ref: order_extra_services.service_id > extra_services.id
+Ref: promocode_user_usages.promo_id > promocodes.id
+Ref: promocode_user_usages.user_id > users.id
+Ref: promocode_user_usages.order_id > orders.id
+Ref: product_reviews.product_id > products.id
+Ref: product_reviews.user_id > users.id
+Ref: ai_messages.chat_id > ai_chats.id

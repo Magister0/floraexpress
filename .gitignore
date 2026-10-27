@@ -1,0 +1,19 @@
+# Локальные настройки с паролями и токенами — никогда не коммитить!
+config.local.php
+.env
+
+# Логи
+*.log
+
+# Загружаемые фотоотчёты курьеров (пользовательские данные)
+img/photo_reports/*
+!img/photo_reports/.gitkeep
+
+# Локальная SQLite-база ранних версий
+data/
+
+# Системное и IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
